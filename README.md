@@ -1,4 +1,4 @@
-#Strong Arms
+# Strong Arms
 
 This is a very hacky attempt at preventing humans from having to draw Armstrong
 relation tables by hand like some Neanderthals.

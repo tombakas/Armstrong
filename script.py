@@ -77,33 +77,30 @@ def get_closures(columns, dependencies):
     return closures_a
 
 
-def get_good_closures(closures, n):
-    regular = {}
+def reduce_closures(closures, n):
     abridged = {}
 
-    for key, value in closures.items():
-        if len(value) < n:
-            regular[key] = value
+    # Remove closures that are superkeys
+    for key, value in deepcopy(closures).items():
+        if len(value) >= n:
+            del closures[key]
 
-    values = list(regular.values())
+    values = list(closures.values())
     uniques = [value for value in values if values.count(value) == 1]
 
-    for key_1, value_1 in regular.items():
+    # only keep one of the closures having the same value
+    for key_1, value_1 in closures.items():
         if value_1 not in uniques:
-            for key_2, value_2 in regular.items():
+            for key_2, value_2 in closures.items():
                 if value_1 == value_2:
-                    if len(key_1) > len(key_2):
-                        if key_2 in abridged.keys():
-                            del abridged[key_2]
-                        abridged[key_1] = value_1
+                    if value_1 not in abridged.values():
+                        abridged[key_1] == value
                     else:
-                        if key_1 in abridged.keys():
-                            del abridged[key_1]
-                        abridged[key_2] = value_1
+                        break
         else:
             abridged[key_1] = value_1
 
-    return abridged, regular
+    return abridged
 
 
 def regular_armstrong(columns, closures):
@@ -191,7 +188,7 @@ def main():
     columns, dependencies = parse_file(f)
     closures = get_closures(columns, dependencies)
 
-    good_closures_a, good_closures_r = get_good_closures(closures, len(columns))
+    good_closures_a = reduce_closures(closures, len(columns))
 
     regular_armstrong(columns, good_closures_a)
     strong_armstrong(columns, good_closures_a)

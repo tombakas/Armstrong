@@ -1,5 +1,6 @@
 $( document ).ready(function() {
-    $( "#get-armstrongs" ).click(function() {
+
+    function process_dependencies() {
         var schema_raw = $("#schema").val();
         var dependencies_raw = $("#dependencies").val();
 
@@ -66,5 +67,15 @@ $( document ).ready(function() {
             .fail(function() {
                 console.log("Error");
             })
+    };
+
+    $( "#get-armstrongs" ).click(process_dependencies());
+
+    $("input").keyup(function(e) {
+        var code = e.keyCode ? e.keyCode : e.which;
+        if (code == 13) {  // Enter keycode
+            e.preventDefault();
+            process_dependencies();
+        }
     });
 });

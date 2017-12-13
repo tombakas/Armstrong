@@ -9,11 +9,12 @@
 """
 
 import re
+import json
 import string
+import argparse
 
 from collections import OrderedDict
 
-from pprint import pprint
 from itertools import combinations
 from itertools import tee
 
@@ -213,7 +214,6 @@ def strong_armstrong_product(relations):
                 concatenated.append(
                     ["".join(s) for s in zip(item_1, item_2)]
                 )
-            pprint(concatenated)
         return concatenated
 
     return reduce(meld, lists)
@@ -230,13 +230,30 @@ def print_relation(relation_dict):
     return
 
 
-def main():
-    f = "./dependencies.txt"
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--regular_armstrong", action="store_true", help="Print a Regular Armstrong table")
+    parser.add_argument("--strong_armstrong", action="store_true", help="Print a Strong Armstrong table")
+    parser.add_argument("--json", action="store_true", help="Return json of tables")
+    parser.add_argument("--input-json", type=str, default="", help="Json containing definitions")
+    parser.add_argument("--input-file", type=str, default="./dependencies.txt", help="File containing definitiosn")
+    args = parser.parse_args()
+    return args
 
+
+def main():
     columns = []
     dependencies = {}
 
-    columns, dependencies = parse_file(f)
+    args = parse_args()
+
+    if args.input_json:
+        data = json.loads(args.input_json)
+        columns = data["columns"]
+        dependencies = data["dependencies"]
+    else:
+        columns, dependencies = parse_file(args.input_file)
+
     closures = get_closures(columns, dependencies)
 
     abridged_closures = reduce_closures(closures, len(columns))
@@ -244,8 +261,19 @@ def main():
     armstrong, tex_armstrong = regular_armstrong(columns, abridged_closures, False)
     strong_armstrong = strong_armstrong_paul(columns, abridged_closures)
 
-    print_relation(armstrong)
-    print_relation(strong_armstrong)
+    if args.json:
+        j = {}
+        j["columns"] = columns
+        j["armstrong"] = armstrong["entries"]
+        j["s_armstrong_paul"] = strong_armstrong["entries"]
+        j["s_armstrong_product"] = strong_armstrong_product(tex_armstrong)
+        print(j)
+        return
+
+    if args.regular_armstrong:
+        print_relation(armstrong)
+    if args.strong_armstrong:
+        print_relation(strong_armstrong)
 
 
 if __name__ == "__main__":

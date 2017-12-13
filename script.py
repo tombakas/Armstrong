@@ -32,6 +32,7 @@ def pairwise(iterable):
 
 def parse_file(f):
 
+    data = {}
     columns = []
     dependencies = {}
 
@@ -51,7 +52,10 @@ def parse_file(f):
                         key, value = tuple(re.split("->", item))
                         dependencies[key] = dependencies.get(key, "") + value
 
-    return columns, dependencies
+    data["columns"] = columns
+    data["dependencies"] = dependencies
+
+    return data
 
 
 def get_combinations(columns):
@@ -108,7 +112,7 @@ def reduce_closures(closures, n):
     return abridged
 
 
-def regular_armstrong(columns, closures, print_to_screen=True):
+def regular_armstrong(columns, closures):
 
     iterable = 2
     nr_columns = len(columns)
@@ -158,7 +162,7 @@ def regular_armstrong(columns, closures, print_to_screen=True):
     return armstrong, tex_armstrong
 
 
-def strong_armstrong_paul(columns, closures, print_to_screen=True):
+def strong_armstrong_paul(columns, closures):
 
     nr_columns = len(columns)
     nr_entries = 2**(len(closures.keys()) + 1)
@@ -232,8 +236,8 @@ def print_relation(relation_dict):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--regular_armstrong", action="store_true", help="Print a Regular Armstrong table")
-    parser.add_argument("--strong_armstrong", action="store_true", help="Print a Strong Armstrong table")
+    parser.add_argument("--regular-armstrong", action="store_true", help="Print a Regular Armstrong table")
+    parser.add_argument("--strong-armstrong", action="store_true", help="Print a Strong Armstrong table")
     parser.add_argument("--json", action="store_true", help="Return json of tables")
     parser.add_argument("--input-json", type=str, default="", help="Json containing definitions")
     parser.add_argument("--input-file", type=str, default="./dependencies.txt", help="File containing definitiosn")
@@ -241,34 +245,45 @@ def parse_args():
     return args
 
 
-def main():
-    columns = []
-    dependencies = {}
+def process_request(data):
+    armstrong, tex_armstrong, strong_armstrong = get_tables(data)
 
-    args = parse_args()
+    j = {}
+    j["columns"] = data["columns"]
+    j["armstrong"] = armstrong["entries"]
+    j["armstrong_latex"] = tex_armstrong
+    j["s_armstrong_paul"] = strong_armstrong["entries"]
+    j["s_armstrong_product"] = strong_armstrong_product(tex_armstrong)
 
-    if args.input_json:
-        data = json.loads(args.input_json)
-        columns = data["columns"]
-        dependencies = data["dependencies"]
-    else:
-        columns, dependencies = parse_file(args.input_file)
+    return j
+
+
+def get_tables(data):
+    columns = data["columns"]
+    dependencies = data["dependencies"]
 
     closures = get_closures(columns, dependencies)
 
     abridged_closures = reduce_closures(closures, len(columns))
 
-    armstrong, tex_armstrong = regular_armstrong(columns, abridged_closures, False)
+    armstrong, tex_armstrong = regular_armstrong(columns, abridged_closures)
     strong_armstrong = strong_armstrong_paul(columns, abridged_closures)
 
+    return armstrong, tex_armstrong, strong_armstrong
+
+
+def main():
+    args = parse_args()
+
+    if args.input_json:
+        data = json.loads(args.input_json)
+    else:
+        data = parse_file(args.input_file)
+
+    armstrong, tex_armstrong, strong_armstrong = get_tables(data)
+
     if args.json:
-        j = {}
-        j["columns"] = columns
-        j["armstrong"] = armstrong["entries"]
-        j["s_armstrong_paul"] = strong_armstrong["entries"]
-        j["s_armstrong_product"] = strong_armstrong_product(tex_armstrong)
-        print(j)
-        return
+        print(json.dumps(process_request))
 
     if args.regular_armstrong:
         print_relation(armstrong)

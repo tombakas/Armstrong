@@ -1,0 +1,41 @@
+<h3>Regular Armstrong</h3>
+<table>
+  {% for item in table.columns %}
+    <th>{{ item }}</th>
+  {% endfor %}
+  {% for item in table.armstrong %}
+    <tr class="armstrong">
+      {% for element in item %}
+        <td>{{ element }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+
+<h3>Strong Armstrong (Paul De Bra)</h3>
+<table>
+  {% for item in table.columns %}
+    <th>{{ item }}</th>
+  {% endfor %}
+  {% for item in table.s_armstrong_paul %}
+    <tr class="armstrong">
+      {% for element in item %}
+        <td>{{ element }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+
+<h3>Strong Armstrong (product)</h3>
+<table>
+  {% for item in table.columns %}
+    <th>{{ item }}</th>
+  {% endfor %}
+  {% for item in table.s_armstrong_product %}
+    <tr class="armstrong">
+      {% for element in item %}
+        <td>${{ element }}$</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>

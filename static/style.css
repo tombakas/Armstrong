@@ -1,0 +1,53 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100);
+
+body {
+    font-family: "Roboto", helvetica, arial, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    text-rendering: optimizeLegibility;
+}
+
+table {
+    font-size: 1.2em;
+}
+
+td {
+    padding: 4px 10px;
+}
+
+textarea {
+    resize: none;
+    font-size: 1.2em;
+}
+
+textarea::placeholder {
+    color: #999;
+}
+
+.input-table {
+    background: #E4E4E4;
+}
+
+button {
+    border: none;
+    padding: 8px 26px;
+    font-weight: bold;
+    background-color: #6bad6b;
+    color: white;
+    opacity: .7;
+}
+
+button:hover {
+    cursor: pointer;
+    opacity: 1;
+}
+
+#error {
+    padding-top: 12px;
+    font-size: 1.2em;
+    color: red;
+    display: none;
+}
+
+.armstrong:nth-of-type(even) {background: #E4E4E4}
+.armstrong:nth-of-type(odd) {background: #FFF}

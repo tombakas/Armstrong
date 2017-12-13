@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="static/style.css">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+      });
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/static/logic.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <div>
+      <table class="input-table">
+        <tr>
+          <td>
+            <b>Schema: </b>
+          </td>
+          <td>
+            <textarea id="schema" cols="20" rows="1" placeholder="A, B, C"></textarea>
+          </td>
+          <td>Syntax: A, B, C</td>
+        </tr>
+        <tr>
+          <td>
+            <b>Dependencies: </b>
+          </td>
+          <td>
+            <textarea id="dependencies" cols="20" rows="1" placeholder="A->B, C->A"></textarea>
+          </td>
+          <td>Syntax: A->B, C->A</td>
+        </tr>
+      </table>
+      <div id="error">
+        <span>Test poop</span>
+      </div>
+      <br>
+      <button id="get-armstrongs" type="button">Get Armstrongs</button>
+    </div>
+
+    <div id="tables"></div>
+
+    <script type="text/javascript" async
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+  </body>
+</html>

@@ -283,7 +283,8 @@ def main():
     armstrong, tex_armstrong, strong_armstrong = get_tables(data)
 
     if args.json:
-        print(json.dumps(process_request))
+        print(json.dumps(process_request(data)))
+        return
 
     if args.regular_armstrong:
         print_relation(armstrong)

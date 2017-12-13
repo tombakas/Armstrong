@@ -12,7 +12,16 @@ import re
 import string
 
 from itertools import combinations
+from itertools import tee
+
 from copy import deepcopy
+
+
+def pairwise(iterable):
+    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
+    a, b = tee(iterable)
+    next(b, None)
+    return zip(a, b)
 
 
 def parse_file(f):
@@ -85,69 +94,73 @@ def reduce_closures(closures, n):
         if len(value) >= n:
             del closures[key]
 
-    values = list(closures.values())
-    uniques = [value for value in values if values.count(value) == 1]
-
     # only keep one of the closures having the same value
-    for key_1, value_1 in closures.items():
-        if value_1 not in uniques:
-            for key_2, value_2 in closures.items():
-                if value_1 == value_2:
-                    if value_1 not in abridged.values():
-                        abridged[key_1] == value
-                    else:
-                        break
-        else:
-            abridged[key_1] = value_1
+    for key, value in closures.items():
+        if value not in abridged.values():
+            abridged[key] = value
 
     return abridged
 
 
-def regular_armstrong(columns, closures):
+def regular_armstrong(columns, closures, print_to_screen=True):
 
-    width = 5
     iterable = 2
     nr_columns = len(columns)
     entries = []
-
-    fmt = (("{:^" + str(width) + "}|") * nr_columns)[:-1]
-
-    print("Armstrong relation table:\n")
-
-    print(fmt.format(*tuple(columns)))
-    print("-" * ((width + 1) * nr_columns - 1))
+    armstrong = {}
+    tex_armstrong = {}
 
     # empty set closure
-    entries.append((0,) * nr_columns)
-    entries.append((1,) * nr_columns)
+    entries.append([0] * nr_columns)
+    entries.append([1] * nr_columns)
+
+    tex_armstrong["0"] = [
+        ["0_∅"] * nr_columns,
+        ["1_∅"] * nr_columns
+    ]
 
     for key, value in closures.items():
+        tex_entries = []
+        tex_value_array = []
+
         value_array = [iterable] * nr_columns
-        entries.append((iterable,) * nr_columns)
+        entries.append(deepcopy(value_array))
+
+        for column in columns:
+            tex_value_array.append("1_" + key)
+        tex_entries.append(deepcopy(tex_value_array))
+
         for column in columns:
             if column not in value:
                 value_array[columns.index(column)] = iterable + 1
-        entries.append(tuple(value_array))
+                tex_value_array[columns.index(column)] = "0_" + key
+        entries.append(value_array)
+        tex_entries.append(tex_value_array)
 
+        tex_armstrong[key] = tex_entries
         iterable += 2
 
-    for entry in entries:
-        print(fmt.format(*entry))
+    width = len(str(iterable)) + 4
+    fmt = (("{:^" + str(width) + "}|") * nr_columns)[:-1]
 
-    print("\n* * *\n")
+    armstrong["name"] = "Armstrong relation table"
+    armstrong["width"] = width
+    armstrong["format"] = fmt
+    armstrong["columns"] = tuple(columns)
+    armstrong["entries"] = entries
+
+    return armstrong, tex_armstrong
 
 
-def strong_armstrong(columns, closures):
+def strong_armstrong_paul(columns, closures, print_to_screen=True):
 
     nr_columns = len(columns)
     nr_entries = 2**(len(closures.keys()) + 1)
-
     width = 2 + len((str(bin(nr_entries - 1))))
-    fmt = (("{:^" + str(width) + "}|") * nr_columns)[:-1]
 
-    print("Strong Armstrong relation table:\n")
-    print(fmt.format(*tuple(columns)))
-    print("-" * ((width + 1) * nr_columns - 1))
+    strong_armstrong = {}
+
+    fmt = (("{:^" + str(width) + "}|") * nr_columns)[:-1]
 
     entries = [[""] * nr_columns for a in range(nr_entries)]
 
@@ -175,8 +188,24 @@ def strong_armstrong(columns, closures):
         interval /= 2
         switch = False
 
-    for entry in entries:
-        print(fmt.format(*entry))
+    strong_armstrong["name"] = "Strong Armstrong relation table"
+    strong_armstrong["width"] = width
+    strong_armstrong["format"] = fmt
+    strong_armstrong["columns"] = tuple(columns)
+    strong_armstrong["entries"] = entries
+
+    return strong_armstrong
+
+
+def print_relation(relation_dict):
+    print("-" * (len(relation_dict["name"]) + 1))
+    print(relation_dict["name"] + ":\n")
+    print(relation_dict["format"].format(*relation_dict["columns"]))
+    print("-" * ((relation_dict["width"] + 1) * len(relation_dict["columns"]) - 1))
+
+    for entry in relation_dict["entries"]:
+        print(relation_dict["format"].format(*entry))
+    return
 
 
 def main():
@@ -188,10 +217,13 @@ def main():
     columns, dependencies = parse_file(f)
     closures = get_closures(columns, dependencies)
 
-    good_closures_a = reduce_closures(closures, len(columns))
+    abridged_closures = reduce_closures(closures, len(columns))
 
-    regular_armstrong(columns, good_closures_a)
-    strong_armstrong(columns, good_closures_a)
+    armstrong, tex_armstrong = regular_armstrong(columns, abridged_closures, False)
+    strong_armstrong = strong_armstrong_paul(columns, abridged_closures)
+
+    print_relation(armstrong)
+    print_relation(strong_armstrong)
 
 
 if __name__ == "__main__":

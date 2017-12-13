@@ -11,8 +11,13 @@
 import re
 import string
 
+from collections import OrderedDict
+
+from pprint import pprint
 from itertools import combinations
 from itertools import tee
+
+from functools import reduce
 
 from copy import deepcopy
 
@@ -108,15 +113,15 @@ def regular_armstrong(columns, closures, print_to_screen=True):
     nr_columns = len(columns)
     entries = []
     armstrong = {}
-    tex_armstrong = {}
+    tex_armstrong = OrderedDict()
 
     # empty set closure
     entries.append([0] * nr_columns)
     entries.append([1] * nr_columns)
 
     tex_armstrong["0"] = [
-        ["0_∅"] * nr_columns,
-        ["1_∅"] * nr_columns
+        ["1_∅"] * nr_columns,
+        ["0_∅"] * nr_columns
     ]
 
     for key, value in closures.items():
@@ -195,6 +200,23 @@ def strong_armstrong_paul(columns, closures, print_to_screen=True):
     strong_armstrong["entries"] = entries
 
     return strong_armstrong
+
+
+def strong_armstrong_product(relations):
+    lists = [relations[key] for key in relations.keys()]
+
+    def meld(a, b):
+        concatenated = []
+
+        for item_1 in a:
+            for item_2 in b:
+                concatenated.append(
+                    ["".join(s) for s in zip(item_1, item_2)]
+                )
+            pprint(concatenated)
+        return concatenated
+
+    return reduce(meld, lists)
 
 
 def print_relation(relation_dict):

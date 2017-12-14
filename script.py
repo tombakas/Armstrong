@@ -125,8 +125,8 @@ def regular_armstrong(columns, closures):
     entries.append([1] * nr_columns)
 
     tex_armstrong["0"] = [
-        ["1_∅"] * nr_columns,
-        ["0_∅"] * nr_columns
+        ["1_{∅}"] * nr_columns,
+        ["0_{∅}"] * nr_columns
     ]
 
     for key, value in closures.items():
@@ -137,13 +137,14 @@ def regular_armstrong(columns, closures):
         entries.append(deepcopy(value_array))
 
         for column in columns:
-            tex_value_array.append("1_" + key)
+            tex_value_array.append("1_{" + column + "}")
         tex_entries.append(deepcopy(tex_value_array))
 
         for column in columns:
             if column not in value:
                 value_array[columns.index(column)] = iterable + 1
-                tex_value_array[columns.index(column)] = "0_" + key
+                tex_value_array[columns.index(column)] = "0_{" + column + "}"
+
         entries.append(value_array)
         tex_entries.append(tex_value_array)
 

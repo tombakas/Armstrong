@@ -53,7 +53,7 @@ button:hover {
 #error {
     padding-top: 12px;
     font-size: 1.2em;
-    color: red;
+    color: #d40909;
     display: none;
 }
 

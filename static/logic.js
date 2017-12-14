@@ -14,6 +14,10 @@ $( document ).ready(function() {
                 $("#error span").text("Invalid character in \"Schema\"");
                 $("#error").show();
                 return;
+            } else if (columns.length > 4) {
+                $("#error span").text("That many attributes is too much work. Abort.");
+                $("#error").show();
+                return;
             }
         }
 

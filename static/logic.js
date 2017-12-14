@@ -33,32 +33,34 @@ $( document ).ready(function() {
 
         var split_dependencies = dependencies_raw.split(",");
 
-        for (i = 0; i < split_dependencies.length; i++) {
-            var split = split_dependencies[i].split("->");
+        if (dependencies.length > 0) {
+            for (i = 0; i < split_dependencies.length; i++) {
+                var split = split_dependencies[i].split("->");
 
-            for (k = 0; k < split.length; k++) {
-                split[k] = split[k].trim()
-            }
+                for (k = 0; k < split.length; k++) {
+                    split[k] = split[k].trim()
+                }
 
-            if (split.length != 2) {
-                $("#error span").text("Invalid dependency syntax");
-                $("#error").show();
-                return;
-            }
-
-            for (j = 0; j < split.length; j++) {
-                if (! /^[a-iA-Z()]+$/.test(split[j])) {
-                    $("#error span").text("Invalid character in \"Dependencies\"");
+                if (split.length != 2) {
+                    $("#error span").text("Invalid dependency syntax");
                     $("#error").show();
                     return;
-                };
+                }
 
-                $("#error").hide();
+                for (j = 0; j < split.length; j++) {
+                    if (! /^[a-iA-Z()]+$/.test(split[j])) {
+                        $("#error span").text("Invalid character in \"Dependencies\"");
+                        $("#error").show();
+                        return;
+                    };
 
-                if (!(split[0] in dependencies)) {
-                    dependencies[split[0]] = split[1];
-                } else {
-                    dependencies[split[0]] += split[1];
+                    $("#error").hide();
+
+                    if (!(split[0] in dependencies)) {
+                        dependencies[split[0]] = split[1];
+                    } else {
+                        dependencies[split[0]] += split[1];
+                    }
                 }
             }
         }

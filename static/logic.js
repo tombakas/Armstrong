@@ -33,7 +33,7 @@ $( document ).ready(function() {
 
         var split_dependencies = dependencies_raw.split(",");
 
-        if (dependencies.length > 0) {
+        if (dependencies_raw.length > 0) {
             for (i = 0; i < split_dependencies.length; i++) {
                 var split = split_dependencies[i].split("->");
 

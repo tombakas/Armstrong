@@ -32,6 +32,10 @@ $( document ).ready(function() {
         for (i = 0; i < split_dependencies.length; i++) {
             var split = split_dependencies[i].split("->");
 
+            for (k = 0; k < split.length; k++) {
+                split[k] = split[k].trim()
+            }
+
             if (split.length != 2) {
                 $("#error span").text("Invalid dependency syntax");
                 $("#error").show();
@@ -39,14 +43,19 @@ $( document ).ready(function() {
             }
 
             for (j = 0; j < split.length; j++) {
-                if (! /^[a-iA-Z()]+$/.test(split[j].trim())) {
+                if (! /^[a-iA-Z()]+$/.test(split[j])) {
                     $("#error span").text("Invalid character in \"Dependencies\"");
                     $("#error").show();
                     return;
                 };
 
                 $("#error").hide();
-                dependencies[split[0].trim()] = split[1].trim();
+
+                if (!(split[0] in dependencies)) {
+                    dependencies[split[0]] = split[1];
+                } else {
+                    dependencies[split[0]] += split[1];
+                }
             }
         }
 

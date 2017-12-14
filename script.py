@@ -111,8 +111,6 @@ def reduce_closures(closures, n):
         if value not in abridged.values():
             abridged[key] = value
 
-    print(abridged)
-
     return abridged
 
 

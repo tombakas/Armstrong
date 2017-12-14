@@ -286,7 +286,7 @@ def main():
     else:
         data = parse_file(args.input_file)
 
-    armstrong, tex_armstrong, strong_armstrong = get_tables(data)
+    armstrong, strong_armstrong, tex_armstrong, tex_armstrong_dict = get_tables(data)
 
     if args.json:
         print(json.dumps(process_request(data)))

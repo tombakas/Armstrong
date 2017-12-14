@@ -7,6 +7,14 @@ body {
     text-rendering: optimizeLegibility;
 }
 
+.flex-container {
+    display: flex;
+}
+
+.right-table {
+    padding-left: 70px;
+}
+
 table {
     font-size: 1.2em;
 }

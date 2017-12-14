@@ -101,13 +101,17 @@ def reduce_closures(closures, n):
 
     # Remove closures that are superkeys
     for key, value in deepcopy(closures).items():
+        value = "".join(set(value))
         if len(value) >= n:
             del closures[key]
 
     # only keep one of the closures having the same value
     for key, value in closures.items():
+        value = "".join(set(value))
         if value not in abridged.values():
             abridged[key] = value
+
+    print(abridged)
 
     return abridged
 
@@ -118,37 +122,41 @@ def regular_armstrong(columns, closures):
     nr_columns = len(columns)
     entries = []
     armstrong = {}
-    tex_armstrong = OrderedDict()
+    tex_armstrong = []
+    tex_armstrong_dict = OrderedDict()
 
     # empty set closure
     entries.append([0] * nr_columns)
     entries.append([1] * nr_columns)
 
-    tex_armstrong["0"] = [
-        ["1_{∅}"] * nr_columns,
-        ["0_{∅}"] * nr_columns
+    tex_armstrong_dict["0"] = [
+        ["1_{\\varnothing}"] * nr_columns,
+        ["0_{\\varnothing}"] * nr_columns
     ]
 
+    tex_armstrong.extend(tex_armstrong_dict["0"])
+
     for key, value in closures.items():
-        tex_entries = []
+        tmp_tex_entries = []
         tex_value_array = []
 
         value_array = [iterable] * nr_columns
         entries.append(deepcopy(value_array))
 
         for column in columns:
-            tex_value_array.append("1_{" + column + "}")
-        tex_entries.append(deepcopy(tex_value_array))
+            tex_value_array.append("1_{" + key + "}")
+        tmp_tex_entries.append(deepcopy(tex_value_array))
 
         for column in columns:
             if column not in value:
                 value_array[columns.index(column)] = iterable + 1
-                tex_value_array[columns.index(column)] = "0_{" + column + "}"
+                tex_value_array[columns.index(column)] = "0_{" + key + "}"
 
         entries.append(value_array)
-        tex_entries.append(tex_value_array)
+        tmp_tex_entries.append(tex_value_array)
 
-        tex_armstrong[key] = tex_entries
+        tex_armstrong_dict[key] = tmp_tex_entries
+        tex_armstrong.extend(tmp_tex_entries)
         iterable += 2
 
     width = len(str(iterable)) + 4
@@ -160,7 +168,7 @@ def regular_armstrong(columns, closures):
     armstrong["columns"] = tuple(columns)
     armstrong["entries"] = entries
 
-    return armstrong, tex_armstrong
+    return armstrong, tex_armstrong, tex_armstrong_dict
 
 
 def strong_armstrong_paul(columns, closures):
@@ -247,14 +255,14 @@ def parse_args():
 
 
 def process_request(data):
-    armstrong, tex_armstrong, strong_armstrong = get_tables(data)
+    armstrong, strong_armstrong, tex_armstrong, tex_armstrong_dict = get_tables(data)
 
     j = {}
     j["columns"] = data["columns"]
     j["armstrong"] = armstrong["entries"]
     j["armstrong_latex"] = tex_armstrong
     j["s_armstrong_paul"] = strong_armstrong["entries"]
-    j["s_armstrong_product"] = strong_armstrong_product(tex_armstrong)
+    j["s_armstrong_product"] = strong_armstrong_product(tex_armstrong_dict)
 
     return j
 
@@ -264,13 +272,12 @@ def get_tables(data):
     dependencies = data["dependencies"]
 
     closures = get_closures(columns, dependencies)
-
     abridged_closures = reduce_closures(closures, len(columns))
 
-    armstrong, tex_armstrong = regular_armstrong(columns, abridged_closures)
+    armstrong, tex_armstrong, tex_armstrong_dict = regular_armstrong(columns, abridged_closures)
     strong_armstrong = strong_armstrong_paul(columns, abridged_closures)
 
-    return armstrong, tex_armstrong, strong_armstrong
+    return armstrong, strong_armstrong, tex_armstrong, tex_armstrong_dict
 
 
 def main():

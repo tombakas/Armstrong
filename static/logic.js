@@ -69,7 +69,7 @@ $( document ).ready(function() {
             })
     };
 
-    $( "#get-armstrongs" ).click(process_dependencies());
+    $( "#get-armstrongs" ).click(process_dependencies);
 
     $("input").keyup(function(e) {
         var code = e.keyCode ? e.keyCode : e.which;

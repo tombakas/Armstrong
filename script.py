@@ -219,6 +219,16 @@ def strong_armstrong_paul(columns, closures):
 def strong_armstrong_product(relations):
     lists = [relations[key] for key in relations.keys()]
 
+    def combine_string_unicode(l, joiner=""):
+        result = ""
+        for element in l:
+            if not isinstance(element, str):
+                result += element.encode("utf8")
+            else:
+                result += element
+            result += joiner
+        return result
+
     def meld(a, b):
         concatenated = []
 

@@ -166,7 +166,9 @@ def regular_armstrong(columns, closures):
     armstrong["columns"] = tuple(columns)
     armstrong["entries"] = entries
 
-    return armstrong, tex_armstrong, tex_armstrong_dict
+    return {"armstrong": armstrong,
+            "tex_armstrong": tex_armstrong,
+            "tex_armstrong_dict": tex_armstrong_dict}
 
 
 def strong_armstrong_paul(columns, closures):
@@ -253,14 +255,14 @@ def parse_args():
 
 
 def process_request(data):
-    armstrong, strong_armstrong, tex_armstrong, tex_armstrong_dict = get_tables(data)
+    tables = get_tables(data)
 
     j = {}
     j["columns"] = data["columns"]
-    j["armstrong"] = armstrong["entries"]
-    j["armstrong_latex"] = tex_armstrong
-    j["s_armstrong_paul"] = strong_armstrong["entries"]
-    j["s_armstrong_product"] = strong_armstrong_product(tex_armstrong_dict)
+    j["armstrong"] = tables["armstrong"]["entries"]
+    j["armstrong_latex"] = tables["tex_armstrong"]
+    j["s_armstrong_paul"] = tables["strong_armstrong"]
+    j["s_armstrong_product"] = strong_armstrong_product(tables["tex_armstrong_dict"])
 
     return j
 
@@ -269,13 +271,15 @@ def get_tables(data):
     columns = data["columns"]
     dependencies = data["dependencies"]
 
+    tables = {}
+
     closures = get_closures(columns, dependencies)
     abridged_closures = reduce_closures(closures, len(columns))
 
-    armstrong, tex_armstrong, tex_armstrong_dict = regular_armstrong(columns, abridged_closures)
-    strong_armstrong = strong_armstrong_paul(columns, abridged_closures)
+    tables.update(regular_armstrong(columns, abridged_closures))
+    tables["strong_armstrong"] = strong_armstrong_paul(columns, abridged_closures)
 
-    return armstrong, strong_armstrong, tex_armstrong, tex_armstrong_dict
+    return tables
 
 
 def main():
@@ -286,16 +290,16 @@ def main():
     else:
         data = parse_file(args.input_file)
 
-    armstrong, strong_armstrong, tex_armstrong, tex_armstrong_dict = get_tables(data)
+    tables = get_tables(data)
 
     if args.json:
         print(json.dumps(process_request(data)))
         return
 
     if args.regular_armstrong:
-        print_relation(armstrong)
+        print_relation(tables["armstrong"])
     if args.strong_armstrong:
-        print_relation(strong_armstrong)
+        print_relation(tables["strong_armstrong"])
 
 
 if __name__ == "__main__":

@@ -258,11 +258,15 @@ def process_request(data):
     tables = get_tables(data)
 
     j = {}
+
     j["columns"] = data["columns"]
-    j["armstrong"] = tables["armstrong"]["entries"]
-    j["armstrong_latex"] = tables["tex_armstrong"]
-    j["s_armstrong_paul"] = tables["strong_armstrong"]
-    j["s_armstrong_product"] = strong_armstrong_product(tables["tex_armstrong_dict"])
+    j["closures"] = tables["closures"]
+
+    if "TooManyClosuresError" not in tables["errors"]:
+        j["armstrong"] = tables["armstrong"]["entries"]
+        j["armstrong_latex"] = tables["tex_armstrong"]
+        j["s_armstrong_paul"] = tables["strong_armstrong"]
+        j["s_armstrong_product"] = strong_armstrong_product(tables["tex_armstrong_dict"])
 
     return j
 
@@ -271,13 +275,20 @@ def get_tables(data):
     columns = data["columns"]
     dependencies = data["dependencies"]
 
-    tables = {}
+    tables = {"errors": {}}
 
     closures = get_closures(columns, dependencies)
     abridged_closures = reduce_closures(closures, len(columns))
 
-    tables.update(regular_armstrong(columns, abridged_closures))
-    tables["strong_armstrong"] = strong_armstrong_paul(columns, abridged_closures)
+    tables["closures"] = abridged_closures
+
+    if len(abridged_closures.keys()) > 8:
+        tables["errors"].update({
+            "TooManyClosuresError": "Too many closures to compute strong relations."
+        })
+    else:
+        tables.update(regular_armstrong(columns, abridged_closures))
+        tables["strong_armstrong"] = strong_armstrong_paul(columns, abridged_closures)
 
     return tables
 
@@ -296,10 +307,14 @@ def main():
         print(json.dumps(process_request(data)))
         return
 
-    if args.regular_armstrong:
-        print_relation(tables["armstrong"])
-    if args.strong_armstrong:
-        print_relation(tables["strong_armstrong"])
+    if tables["errors"]:
+        for key, value in tables["errors"].items():
+            print("{}: {}".format(key, value))
+    else:
+        if args.regular_armstrong:
+            print_relation(tables["armstrong"])
+        if args.strong_armstrong:
+            print_relation(tables["strong_armstrong"])
 
 
 if __name__ == "__main__":

@@ -83,11 +83,8 @@ def get_closures(columns, dependencies):
         for left_side, right_side in closures_a.items():
 
             for key, value in dependencies.items():
-                if key in right_side:
-                    if value not in right_side:
-                        closures_a[left_side] += value
                 if set(key).issubset(set(right_side)):
-                    if(not set(value).issubset(set(right_side))):
+                    if not set(value).issubset(set(right_side)):
                         closures_a[left_side] += value
 
         if closures_a == closures_b:

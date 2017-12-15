@@ -105,11 +105,11 @@ def reduce_closures(closures, n):
         if len(value) >= n:
             del closures[key]
 
-    # only keep one of the closures having the same value
     for key, value in closures.items():
-        value = "".join(set(value))
+        value = "".join(sorted((set(value))))
+        # only keep one of the closures having the same value
         if value not in abridged.values():
-            abridged[key] = value
+            abridged["".join(sorted(key))] = value
 
     return abridged
 

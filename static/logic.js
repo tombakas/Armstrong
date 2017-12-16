@@ -38,7 +38,7 @@ $( document ).ready(function() {
                 var split = split_dependencies[i].split("->");
 
                 for (k = 0; k < split.length; k++) {
-                    split[k] = split[k].trim()
+                    split[k] = split[k].trim();
                 }
 
                 if (split.length != 2) {
@@ -75,21 +75,22 @@ $( document ).ready(function() {
             dataType: "json",
             data: JSON.stringify(req_json)
         })
-            .done(function(response) {
-                if (response.data.hasOwnProperty("errors")) {
-                    e = response.data.errors;
-                    for(i = 0; i < e.length; i++) {
-                        $("#error span").append(e[i]);
-                        $("#error").show()
-                    }
-                } else {
-                    $('#tables').empty().append(response["data"]);
-                    MathJax.Hub.Typeset();
+        .done(function(response) {
+            if (response.data.hasOwnProperty("errors")) {
+                e = response.data.errors;
+                $("#error span").empty();
+                for(i = 0; i < e.length; i++) {
+                    $("#error span").append(e[i]);
                 }
-            })
-            .fail(function() {
-                console.log("Error");
-            })
+                $("#error").show();
+            } else {
+                $('#tables').empty().append(response["data"]);
+                MathJax.Hub.Typeset();
+            }
+        })
+        .fail(function() {
+            console.log("Error");
+        })
     };
 
     $( "#get-armstrongs" ).click(process_dependencies);

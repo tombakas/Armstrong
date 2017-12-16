@@ -1,70 +1,81 @@
-<div class="flex-container">
-
-<div>
-<h3>Regular Armstrong 1</h3>
-<table>
-  {% for item in table.columns %}
-    <th>{{ item }}</th>
-  {% endfor %}
-  {% for item in table.armstrong %}
-    <tr class="armstrong">
-      {% for element in item %}
-        <td>{{ element }}</td>
-      {% endfor %}
-    </tr>
-  {% endfor %}
-</table>
-</div>
-
-<div class="right-table">
-  <h3>Regular Armstrong 2<h3>
-<table>
-  {% for item in table.columns %}
-    <th>{{ item }}</th>
-  {% endfor %}
-  {% for item in table.armstrong_latex %}
-    <tr class="armstrong">
-      {% for element in item %}
-        <td>${{ element }}$</td>
-      {% endfor %}
-    </tr>
-  {% endfor %}
-</table>
-</div>
-
+<div id="closures">
+  <span id="non-superkey-closures">
+    <b>Non superkey closures used: </b>
+    $\{
+    {% for key, value in table.closures.items() %}
+      {{ key }} \rightarrow {{ value }}{% if not loop.last %},\hspace{0.1cm}{% endif %}
+    {% endfor %}
+    \}$
+  </span>
 </div>
 
 <div class="flex-container">
 
-<div>
-<h3>Strong Armstrong (Paul De Bra)</h3>
-<table>
-  {% for item in table.columns %}
-    <th>{{ item }}</th>
-  {% endfor %}
-  {% for item in table.s_armstrong_paul.entries %}
-    <tr class="armstrong">
-      {% for element in item %}
-        <td>{{ element }}</td>
+  <div>
+    <h3>Regular Armstrong 1</h3>
+    <table>
+      {% for item in table.columns %}
+        <th>{{ item }}</th>
       {% endfor %}
-    </tr>
-  {% endfor %}
-</table>
-</div>
+      {% for item in table.armstrong %}
+        <tr class="armstrong">
+          {% for element in item %}
+            <td>{{ element }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
 
-<div class="right-table">
-<h3>Strong Armstrong (product)</h3>
-<table>
-  {% for item in table.columns %}
-    <th>{{ item }}</th>
-  {% endfor %}
-  {% for item in table.s_armstrong_product %}
-    <tr class="armstrong">
-      {% for element in item %}
-        <td>${{ element }}$</td>
-      {% endfor %}
-    </tr>
-  {% endfor %}
-</table>
-</div>
-</div>
+  <div class="right-table">
+    <h3>Regular Armstrong 2<h3>
+        <table>
+          {% for item in table.columns %}
+            <th>{{ item }}</th>
+          {% endfor %}
+          {% for item in table.armstrong_latex %}
+            <tr class="armstrong">
+              {% for element in item %}
+                <td>${{ element }}$</td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+
+    </div>
+
+    <div class="flex-container">
+
+      <div>
+        <h3>Strong Armstrong (Paul De Bra)</h3>
+        <table>
+          {% for item in table.columns %}
+            <th>{{ item }}</th>
+          {% endfor %}
+          {% for item in table.s_armstrong_paul.entries %}
+            <tr class="armstrong">
+              {% for element in item %}
+                <td>{{ element }}</td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+
+      <div class="right-table">
+        <h3>Strong Armstrong (product)</h3>
+        <table>
+          {% for item in table.columns %}
+            <th>{{ item }}</th>
+          {% endfor %}
+          {% for item in table.s_armstrong_product %}
+            <tr class="armstrong">
+              {% for element in item %}
+                <td>${{ element }}$</td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>

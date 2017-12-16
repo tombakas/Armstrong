@@ -36,6 +36,12 @@ input::placeholder {
     background: #E4E4E4;
 }
 
+#closures {
+    font-size: 1.2em;
+    padding-top: 24px;
+    padding-bottom: 15px;
+}
+
 button {
     border: none;
     padding: 8px 26px;

@@ -76,8 +76,16 @@ $( document ).ready(function() {
             data: JSON.stringify(req_json)
         })
             .done(function(response) {
-                $('#tables').empty().append(response["data"]);
-                MathJax.Hub.Typeset();
+                if (response.data.hasOwnProperty("errors")) {
+                    e = response.data.errors;
+                    for(i = 0; i < e.length; i++) {
+                        $("#error span").append(e[i]);
+                        $("#error").show()
+                    }
+                } else {
+                    $('#tables').empty().append(response["data"]);
+                    MathJax.Hub.Typeset();
+                }
             })
             .fail(function() {
                 console.log("Error");

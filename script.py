@@ -294,7 +294,7 @@ def get_tables(data):
 
     tables["closures"] = abridged_closures
 
-    if len(abridged_closures.keys()) > 8:
+    if len(abridged_closures.keys()) >= 6:
         tables["errors"].update({
             "TooManyClosuresError": "Too many closures to compute strong relations."
         })

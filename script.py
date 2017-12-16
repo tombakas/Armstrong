@@ -277,6 +277,8 @@ def process_request(data):
         j["armstrong_latex"] = tables["tex_armstrong"]
         j["s_armstrong_paul"] = tables["strong_armstrong"]
         j["s_armstrong_product"] = strong_armstrong_product(tables["tex_armstrong_dict"])
+    else:
+        j["errors"] = tables["errors"]
 
     return j
 
